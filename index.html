@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Struk Belanja Pro</title>
   <link rel="manifest" href="manifest.json" />
-   <style>
+ 
+<!-- Tambahkan input tersembunyi -->
+<input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="uploadLogo(event)">
+  <style>
+      <link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" sizes="192x192" />
+<meta name="theme-color" content="#2196f3" />
     /* === CSS TAMPAK LUAR === */
     body {
       font-family: 'Courier New', Courier, monospace;
@@ -209,7 +215,7 @@ body.dark-theme .dropdown-menu {
   transition: transform 0.3s ease;
 }
   </style>
-</head>
+ </head>
 <body>
   <div class="container">
     <div class="judul-logo">
@@ -245,10 +251,10 @@ body.dark-theme .dropdown-menu {
 
 <!-- Menu Dropdown -->
 <div class="dropdown-menu hidden" id="dropdownMenu">
-  <button data-pro="true" onclick="toggleTema()">🌞 / 🌙 Tema</button>
-  <button data-pro="true" onclick="window.print()">🖨️ Cetak Struk</button>
-  <button data-pro="true" onclick="aturLogo()">🖼️ Atur Logo</button>
-  <button data-pro="true" onclick="hilangkanTandaAir()">🚫 Hilangkan Tanda Air</button>
+  <button onclick="toggleTema()">🌞 / 🌙 Tema</button>
+  <button onclick="window.print()">🖨️ Cetak Struk</button>
+  <button onclick="aturLogo()">🖼️ Atur Logo</button>
+  <button onclick="hilangkanTandaAir()">🚫 Hilangkan Tanda Air</button>
 </div>
 
   <!-- SCRIPT -->
@@ -356,54 +362,45 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 <script>
-  // Token Pro disimpan di localStorage
-  const tokenProBenar = "1234-5678-ABCD-EFGH"; // Ganti sesuai tokenmu
+  const kodeAksesPro = "PRO1234"; // <- Ganti ini dengan kode rahasiamu
 
-  // Fungsi minta token
-  function aksesPro() {
-    const token = prompt("Masukkan Token Akses Pro:");
-    if (!token) return;
-    if (token.trim() === tokenProBenar) {
-      localStorage.setItem("pro", "true");
-      alert("✅ Akses Pro berhasil!");
-      aktifkanMenuPro();
+  let aksesPro = false;
+
+  function toggleMenu(btn) {
+    const menu = document.getElementById("dropdownMenu");
+    btn.classList.toggle("active");
+
+    if (!aksesPro) {
+      const konfirmasi = prompt("🔒 Menu ini hanya untuk pengguna Pro.\nMasukkan Kode Akses:");
+      if (konfirmasi === kodeAksesPro) {
+        aksesPro = true;
+        alert("✅ Akses Pro berhasil!");
+        menu.classList.remove("hidden");
+        menu.classList.add("show");
+      } else {
+        const lanjut = confirm("❌ Kode salah!\nIngin daftar Pro via WhatsApp?");
+        if (lanjut) {
+          window.open("https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20daftar%20Struk%20Belanja%20Pro", "_blank");
+        }
+        btn.classList.remove("active");
+        menu.classList.add("hidden");
+        menu.classList.remove("show");
+      }
     } else {
-      alert("❌ Token salah.");
+      // Sudah punya akses
+      menu.classList.toggle("show");
+      menu.classList.toggle("hidden");
     }
   }
-
-  // Fungsi aktifkan menu yang dikunci
-  function aktifkanMenuPro() {
-    document.querySelectorAll('[data-pro="true"]').forEach(btn => {
-      btn.disabled = false;
-      btn.classList.remove("disabled");
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('✅ Service Worker terdaftar:', reg.scope))
+        .catch(err => console.error('❌ Gagal daftar Service Worker:', err));
     });
   }
-
-  // Saat pertama load, cek apakah Pro aktif
-  window.addEventListener("DOMContentLoaded", () => {
-    const isPro = localStorage.getItem("pro") === "true";
-    if (!isPro) {
-      // Kunci semua tombol menu
-      document.querySelectorAll('[data-pro="true"]').forEach(btn => {
-        btn.disabled = true;
-        btn.classList.add("disabled");
-        btn.onclick = aksesPro; // Arahkan ke akses token
-      });
-    } else {
-      aktifkanMenuPro();
-    }
-  });
-<style>
-  .dropdown-menu button.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-</style>
 </script>
-  <!-- Input tersembunyi untuk upload logo -->
-<input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="uploadLogo(event)">
 </body>
-</html>
-</body>
-</html>
+  </html>
