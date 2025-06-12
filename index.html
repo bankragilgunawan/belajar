@@ -9,9 +9,6 @@
 <!-- Tambahkan input tersembunyi -->
 <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="uploadLogo(event)">
   <style>
-      <link rel="manifest" href="manifest.json" />
-<link rel="icon" href="icon-192.png" sizes="192x192" />
-<meta name="theme-color" content="#2196f3" />
     /* === CSS TAMPAK LUAR === */
     body {
       font-family: 'Courier New', Courier, monospace;
@@ -215,7 +212,7 @@ body.dark-theme .dropdown-menu {
   transition: transform 0.3s ease;
 }
   </style>
- </head>
+</head>
 <body>
   <div class="container">
     <div class="judul-logo">
@@ -242,6 +239,16 @@ body.dark-theme .dropdown-menu {
       <button class="btn" onclick="unduhGambar()">📥 Download Gambar</button>
     </div>
   </div>
+  <div id="popupPro" class="popup hidden">
+  <div class="popup-content">
+    <p id="popupText">🔒 Menu ini hanya untuk pengguna Pro.<br>Masukkan kode akses:</p>
+    <input type="password" id="inputKode" placeholder="Kode Akses">
+    <div class="popup-buttons">
+      <button onclick="cekKode()">OK</button>
+      <button onclick="tutupPopup()">Batal</button>
+    </div>
+  </div>
+</div>
 <!-- Menu Garis Tiga -->
 <div class="menu-toggle" onclick="toggleMenu(this)">
   <div class="bar"></div>
@@ -380,7 +387,8 @@ window.addEventListener("DOMContentLoaded", () => {
       } else {
         const lanjut = confirm("❌ Kode salah!\nIngin daftar Pro via WhatsApp?");
         if (lanjut) {
-          window.open("https://wa.me/6282121218466?text=Halo,%20saya%20ingin%20daftar%20Struk%20Belanja%20Pro", "_blank");
+         
+         location.href =("https://wa.me/6282121218466?text=Halo,%20saya%20ingin%20daftar%20Struk%20Belanja%20Pro", "_blank");
         }
         btn.classList.remove("active");
         menu.classList.add("hidden");
@@ -392,15 +400,56 @@ window.addEventListener("DOMContentLoaded", () => {
       menu.classList.toggle("hidden");
     }
   }
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('✅ Service Worker terdaftar:', reg.scope))
-        .catch(err => console.error('❌ Gagal daftar Service Worker:', err));
-    });
-  }
-</script>
+  </script>
+<style>
+.popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+.popup.hidden {
+  display: none;
+}
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  width: 90%;
+  max-width: 300px;
+  animation: fadeIn 0.3s ease;
+}
+.popup-content input {
+  padding: 8px;
+  margin: 10px 0;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.popup-buttons button {
+  margin: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.popup-buttons button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+.popup-buttons button:last-child {
+  background-color: #ddd;
+}
+@keyframes fadeIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+if (!aksesPro) {
+  bukaPopup();
+}
+</style>
 </body>
-  </html>
+</html>
